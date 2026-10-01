@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -e
+
+WORK_DIR="$(pwd)"
+
+if [ -n "$TMUX" ]; then
+    PANE_A=$(tmux display-message -p '#{pane_id}')
+else
+    SESSION="ti-$$"
+    tmux new-session -d -s "$SESSION" -c "$WORK_DIR"
+    PANE_A=$(tmux display-message -t "$SESSION:0" -p '#{pane_id}')
+fi
+
+# Split right: right column gets 40% width → pane B
+PANE_B=$(tmux split-window -h -p 40 -t "$PANE_A" -P -F '#{pane_id}' -c "$WORK_DIR")
+
+# Split pane B bottom: pane C gets 40% of right column height
+PANE_C=$(tmux split-window -v -p 40 -t "$PANE_B" -P -F '#{pane_id}' -c "$WORK_DIR")
+
+tmux send-keys -t "$PANE_A" "nvim ." Enter
+tmux send-keys -t "$PANE_B" "claude --dangerously-skip-permissions" Enter
+
+tmux select-pane -t "$PANE_A"
+
+if [ -z "$TMUX" ]; then
+    tmux attach-session -t "$SESSION"
+fi
