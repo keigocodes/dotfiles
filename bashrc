@@ -12,12 +12,17 @@ if [[ -f /etc/omarchy.conf ]]; then
 else
   export OMARCHY_PATH=/usr/share/omarchy
 fi
-source "$OMARCHY_PATH/default/bash/rc"
+[[ -f "$OMARCHY_PATH/default/bash/rc" ]] && source "$OMARCHY_PATH/default/bash/rc"
 
 # Add your own exports, aliases, and functions here.
 
-. "$HOME/.local/share/../bin/env"
-export PATH="$HOME/.cargo/bin:$PATH"
+[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+
+# Omarchy activates mise itself; do it here on machines without Omarchy
+if [[ -z $MISE_SHELL ]] && command -v mise &>/dev/null; then
+  eval "$(mise activate bash)"
+fi
 
 # My aliases
 alias ti="~/.config/tmux/ti"
