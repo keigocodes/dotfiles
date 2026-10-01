@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
-"""Copy dotfiles from their source locations into this repo.
-
-With --restore, copy them from this repo back into place (e.g. on a new machine).
-"""
+"""Copy dotfiles from their source locations into this repo."""
 
 import shutil
-import sys
-import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -75,34 +70,7 @@ def sync(source: Source) -> None:
     print(f"copied {src} -> {dst.relative_to(REPO_ROOT)}")
 
 
-def restore(source: Source) -> None:
-    src = repo_path(source)
-    dst = source.src
-
-    if not src.exists():
-        print(f"skip   {src.relative_to(REPO_ROOT)} (not in repo)")
-        return
-
-    if dst.exists() or dst.is_symlink():
-        backup = dst.with_name(f"{dst.name}.bak.{int(time.time())}")
-        dst.rename(backup)
-        print(f"backup {dst} -> {backup.name}")
-
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    if src.is_file():
-        shutil.copy2(src, dst, follow_symlinks=False)
-    else:
-        shutil.copytree(src, dst, symlinks=True)
-
-    print(f"copied {src.relative_to(REPO_ROOT)} -> {dst}")
-
-
 def main() -> None:
-    if "--restore" in sys.argv[1:]:
-        for source in SOURCES:
-            restore(source)
-        return
-
     for source in SOURCES:
         sync(source)
     for rel_path, markers in REDACTIONS.items():

@@ -3,7 +3,7 @@
 ## New machine
 
 ```bash
-git clone <this repo> && cd dotfiles && ./install.sh
+git clone <this repo> && cd dotfiles && ./set_up.py
 ```
 
 Installs [mise](https://mise.jdx.dev) (no sudo), copies configs into place (existing ones are backed up as `*.bak.<timestamp>`), and installs the CLI tools listed in `mise/config.toml`.
