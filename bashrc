@@ -24,6 +24,11 @@ if [[ -z $MISE_SHELL ]] && command -v mise &>/dev/null; then
   eval "$(mise activate bash)"
 fi
 
+# Omarchy's aliases and functions (ls -> eza, lt, ff, ..) on machines without Omarchy
+if [[ ! -f "$OMARCHY_PATH/default/bash/rc" && -f "$HOME/.config/bash/omarchy-compat.sh" ]]; then
+  source "$HOME/.config/bash/omarchy-compat.sh"
+fi
+
 # Git worktree helpers: ga / gd (overrides Omarchy's copy so it behaves the same everywhere)
 [[ -f "$HOME/.config/bash/worktrees.sh" ]] && source "$HOME/.config/bash/worktrees.sh"
 

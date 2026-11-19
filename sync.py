@@ -29,6 +29,10 @@ SOURCES = [
     Source(HOME / ".claude" / "skills", dst_name="claude/skills", preserve_symlinks=False),
 ]
 
+# Omarchy's bash setup, copied into ~/.config/bash so non-Omarchy machines get the same aliases.
+OMARCHY_BASH = Path("/usr/share/omarchy/default/bash")
+OMARCHY_BASH_COPY = HOME / ".config" / "bash" / "omarchy"
+
 # Lines containing these markers are dropped from the copied file (keeps secrets out of the repo).
 REDACTIONS = {
     Path("hypr/bindings.conf"): ["Auto-Password"],
@@ -71,7 +75,17 @@ def sync(source: Source) -> None:
     print(f"copied {src} -> {dst.relative_to(REPO_ROOT)}")
 
 
+def copy_omarchy_bash() -> None:
+    if not OMARCHY_BASH.exists():
+        return
+    if OMARCHY_BASH_COPY.exists():
+        shutil.rmtree(OMARCHY_BASH_COPY)
+    shutil.copytree(OMARCHY_BASH, OMARCHY_BASH_COPY)
+    print(f"copied {OMARCHY_BASH} -> {OMARCHY_BASH_COPY}")
+
+
 def main() -> None:
+    copy_omarchy_bash()
     for source in SOURCES:
         sync(source)
     for rel_path, markers in REDACTIONS.items():
