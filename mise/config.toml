@@ -12,10 +12,12 @@ dust = "latest"
 eza = "latest"
 fd = "latest"
 fzf = "latest"
+gum = "latest"
 jq = "latest"
 lazygit = "latest"
 ripgrep = "latest"
 starship = "latest"
+tealdeer = "latest"
 zoxide = "latest"
 
 [settings.upgrade]

@@ -24,6 +24,7 @@ SOURCES = [
     Source(HOME / ".config" / "fcitx5"),
     Source(HOME / ".config" / "tmux"),
     Source(HOME / ".config" / "mise"),
+    Source(HOME / ".config" / "bash"),
     Source(HOME / ".bashrc"),
     Source(HOME / ".claude" / "skills", dst_name="claude/skills", preserve_symlinks=False),
 ]

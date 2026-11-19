@@ -24,6 +24,9 @@ if [[ -z $MISE_SHELL ]] && command -v mise &>/dev/null; then
   eval "$(mise activate bash)"
 fi
 
+# Git worktree helpers: ga / gd (overrides Omarchy's copy so it behaves the same everywhere)
+[[ -f "$HOME/.config/bash/worktrees.sh" ]] && source "$HOME/.config/bash/worktrees.sh"
+
 # My aliases
 alias ti="~/.config/tmux/ti"
 alias cld="claude --dangerously-skip-permissions"
