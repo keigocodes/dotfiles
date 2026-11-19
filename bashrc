@@ -44,3 +44,4 @@ alias cl="clear"
 alias tree="eza --tree --long --icons --git"
 
 # Whenever wifi cannot connect, go here in the browser: curl -v http://neverssl.com
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"

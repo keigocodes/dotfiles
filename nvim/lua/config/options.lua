@@ -15,13 +15,14 @@ vim.diagnostic.config({
   },
 })
 
--- cpp: real tabs, width 4, matching .clang-format (UseTab: ForIndentation, TabWidth: 4)
+-- c/cpp: 2-space indent, matching ~/.clang-format (BasedOnStyle: LLVM -> IndentWidth: 2, UseTab: Never)
+-- so indentation while typing matches what clang-format produces on save.
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "cpp",
+  pattern = { "c", "cpp" },
   callback = function()
-    vim.opt_local.expandtab = false
-    vim.opt_local.shiftwidth = 4
-    vim.opt_local.tabstop = 4
-    vim.opt_local.softtabstop = 4
+    vim.opt_local.expandtab = true
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.tabstop = 2
+    vim.opt_local.softtabstop = 2
   end,
 })

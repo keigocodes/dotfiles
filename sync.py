@@ -8,12 +8,16 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent
 HOME = Path.home()
 
+# Never copied into the repo: VCS data and backups left by set_up.py, Omarchy upgrades and editors.
+IGNORE = (".git", "*.bak", "*.bak.*")
+
 
 @dataclass(frozen=True)
 class Source:
     src: Path
     dst_name: str | None = None
     preserve_symlinks: bool = True
+    ignore: tuple[str, ...] = ()
 
 
 SOURCES = [
@@ -22,7 +26,8 @@ SOURCES = [
     Source(HOME / ".config" / "ghostty"),
     Source(HOME / ".config" / "hypr"),
     Source(HOME / ".config" / "fcitx5"),
-    Source(HOME / ".config" / "tmux"),
+    # Plugins are installed by tpm from tmux.conf (see set_up.py), so don't vendor them.
+    Source(HOME / ".config" / "tmux", ignore=("plugins",)),
     Source(HOME / ".config" / "mise"),
     Source(HOME / ".config" / "bash"),
     Source(HOME / ".bashrc"),
@@ -35,11 +40,14 @@ OMARCHY_BASH_COPY = HOME / ".config" / "bash" / "omarchy"
 
 # Lines containing these markers are dropped from the copied file (keeps secrets out of the repo).
 REDACTIONS = {
-    Path("hypr/bindings.conf"): ["Auto-Password"],
+    Path("hypr/bindings.conf"): ["Auto-Password", "Auto-Email"],
+    Path("hypr/bindings.lua"): ["Auto-Password", "Auto-Email"],
 }
 
 
 def redact(path: Path, markers: list[str]) -> None:
+    if not path.exists():
+        return
     lines = path.read_text().splitlines(keepends=True)
     path.write_text("".join(line for line in lines if not any(m in line for m in markers)))
 
@@ -56,20 +64,20 @@ def sync(source: Source) -> None:
         print(f"skip   {src} (does not exist)")
         return
 
+    if dst.is_dir():
+        shutil.rmtree(dst)
+    elif dst.exists():
+        dst.unlink()
+    dst.parent.mkdir(parents=True, exist_ok=True)
+
     if src.is_file():
-        if dst.exists():
-            dst.unlink()
-        dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dst, follow_symlinks=not source.preserve_symlinks)
     else:
-        if dst.exists():
-            shutil.rmtree(dst)
-        dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(
             src,
             dst,
             symlinks=source.preserve_symlinks,
-            ignore=shutil.ignore_patterns(".git"),
+            ignore=shutil.ignore_patterns(*IGNORE, *source.ignore),
         )
 
     print(f"copied {src} -> {dst.relative_to(REPO_ROOT)}")

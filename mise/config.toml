@@ -19,6 +19,7 @@ ripgrep = "latest"
 starship = "latest"
 tealdeer = "latest"
 zoxide = "latest"
+copilot = "latest"
 
 [settings.upgrade]
 auto_prune = false

@@ -48,3 +48,15 @@ vim.keymap.set("n", "<leader>mp", function()
   vim.system({ "mpv", vim.fn.expand("%:p") }, { detach = true })
 end, { desc = "Open file in mpv" })
 
+
+-- Literal search: `/` and `?` searches are run in very-nomagic mode (\V), so ( ) [ ] . * ~ etc.
+-- match as plain text. Only a backslash is still special (type \\ to match a literal backslash).
+-- \V is prepended invisibly when you press <CR>, so it never shows up while typing.
+vim.keymap.set("c", "<CR>", function()
+  local t = vim.fn.getcmdtype()
+  local line = vim.fn.getcmdline()
+  if (t == "/" or t == "?") and line ~= "" and not line:match("^\\[vVmM]") then
+    return "<C-b>\\V<CR>"
+  end
+  return "<CR>"
+end, { expr = true, desc = "Literal search on submit" })

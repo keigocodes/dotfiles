@@ -1,8 +1,34 @@
 return {
   {
     "okuuva/auto-save.nvim",
+    enabled = false,
     version = "*",
     event = { "InsertLeave", "TextChanged" },
+    -- Don't let auto-saves trigger LazyVim's format-on-save; manual :w still formats.
+    init = function()
+      local group = vim.api.nvim_create_augroup("autosave_no_format", { clear = true })
+      local prev = {}
+      vim.api.nvim_create_autocmd("User", {
+        group = group,
+        pattern = "AutoSaveWritePre",
+        callback = function(args)
+          local buf = args.data.saved_buffer
+          prev[buf] = vim.b[buf].autoformat
+          vim.b[buf].autoformat = false
+        end,
+      })
+      vim.api.nvim_create_autocmd("User", {
+        group = group,
+        pattern = "AutoSaveWritePost",
+        callback = function(args)
+          local buf = args.data.saved_buffer
+          if vim.api.nvim_buf_is_valid(buf) then
+            vim.b[buf].autoformat = prev[buf]
+          end
+          prev[buf] = nil
+        end,
+      })
+    end,
     opts = {
       debounce_delay = 2000,
       trigger_events = {

@@ -87,5 +87,14 @@ return {
     "loctvl842/monokai-pro.nvim",
     lazy = false,
     priority = 1000,
+    opts = {
+      -- Restore pre-May-2026 float colors; upstream 369394b switched NormalFloat to the lighter suggest-widget gray.
+      override = function(scheme)
+        return {
+          NormalFloat = { bg = scheme.base.black, fg = scheme.base.dimmed1 },
+          FloatBorder = { bg = scheme.editor.background, fg = scheme.base.black },
+        }
+      end,
+    },
   },
 }

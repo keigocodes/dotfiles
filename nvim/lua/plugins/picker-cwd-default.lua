@@ -3,6 +3,14 @@
 return {
   {
     "folke/snacks.nvim",
+    opts = {
+      picker = {
+        sources = {
+          -- Literal (fixed-string) grep by default; toggle regex with <A-r> in the picker.
+          grep = { regex = false },
+        },
+      },
+    },
     keys = {
       -- Files: swap ff/fF
       { "<leader>ff", function() Snacks.picker.files({ hidden = true }) end, desc = "Find Files (cwd)" },

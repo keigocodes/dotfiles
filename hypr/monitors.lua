@@ -4,7 +4,7 @@
 -- Restored from the pre-Quattro monitors.conf: 1x, no scaling (this panel
 -- isn't a retina-class display).
 local omarchy_gdk_scale = 1
-local omarchy_monitor_scale = 1
+local omarchy_monitor_scale = 1.0
 
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })

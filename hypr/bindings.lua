@@ -37,12 +37,22 @@ o.bind("SUPER + SHIFT + A", "Claude", { webapp = "https://claude.ai/new" })
 
 -- Prefer the auto-password macro here; Quattro's default now puts Google Photos on this key.
 hl.unbind("SUPER + SHIFT + P")
-o.bind("SUPER + SHIFT + P", "Auto-Password", "sleep 0.2 && wtype '<redacted>'")
 
 -- Prefer the auto-email macro here; Quattro's default now puts the Email webapp on this key.
 hl.unbind("SUPER + SHIFT + E")
-o.bind("SUPER + SHIFT + E", "Auto-Email", "sleep 0.2 && wtype '<redacted>'")
 
 -- Everything else from the old bindings.conf (Terminal, Tmux, File manager,
 -- File manager (cwd), Browser (private), Music, Music TUI, Docker, Obsidian)
 -- already matches Omarchy's current defaults one-for-one, so it's left alone.
+
+-- Only workspaces 1-5 and 0 (10) are used; drop the Super+6..9 workspace keys.
+for workspace = 6, 9 do
+  local key = "code:" .. tostring(workspace + 9)
+  hl.unbind("SUPER + " .. key)
+  hl.unbind("SUPER + SHIFT + " .. key)
+  hl.unbind("SUPER + SHIFT + ALT + " .. key)
+end
+
+-- Prefer a much stronger night light; the default toggle hardcodes 4000K.
+hl.unbind("SUPER + CTRL + N")
+o.bind("SUPER + CTRL + N", "Toggle nightlight", "nightlight-toggle")

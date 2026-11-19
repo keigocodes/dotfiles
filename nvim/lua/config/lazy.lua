@@ -22,7 +22,6 @@ require("lazy").setup({
     --
     -- Extras not managed via :LazyExtras / lazyvim.json live here.
     { import = "lazyvim.plugins.extras.lang.rust" },
-    { import = "lazyvim.plugins.extras.ai.copilot" },
     { import = "plugins" },
   },
   defaults = {

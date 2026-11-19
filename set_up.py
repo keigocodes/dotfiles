@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Set up a new machine: copy configs from this repo into place and install CLI tools with mise."""
+"""Set up a new machine: copy configs into place, then install system packages, mise tools, and nvim/tmux plugins."""
 
 import shutil
 import subprocess
@@ -10,8 +10,23 @@ from sync import HOME, REPO_ROOT, SOURCES, Source, repo_path
 
 MISE = HOME / ".local" / "bin" / "mise"
 
-# System packages not available through mise
-PACMAN_PACKAGES = ["pdftk"]
+# System packages not available through mise.
+# neovim plus what LazyVim needs to build parsers and install Mason tools (go is for gopls etc.).
+PACMAN_PACKAGES = [
+    "pdftk",
+    "tmux",
+    "neovim",
+    "git",
+    "gcc",
+    "make",
+    "tree-sitter-cli",
+    "unzip",
+    "curl",
+    "go",
+]
+
+NVIM_INSTALL_SCRIPT = REPO_ROOT / "nvim_install.lua"
+TPM = HOME / ".config" / "tmux" / "plugins" / "tpm"
 
 
 def restore(source: Source) -> None:
@@ -53,11 +68,36 @@ def install_tools() -> None:
     subprocess.run([mise, "exec", "--", "tldr", "--update"], check=True)
 
 
+def install_nvim_plugins() -> None:
+    nvim = shutil.which("nvim")
+    if not nvim:
+        print("skip   neovim plugins (nvim not installed)")
+        return
+    mise = shutil.which("mise") or str(MISE)
+    # mise tools (node, etc.) on PATH so Mason can install npm-based servers
+    subprocess.run(
+        [mise, "exec", "--", nvim, "--headless", f"+luafile {NVIM_INSTALL_SCRIPT}"],
+        check=True,
+    )
+
+
+def install_tmux_plugins() -> None:
+    if not shutil.which("tmux"):
+        print("skip   tmux plugins (tmux not installed)")
+        return
+    if not TPM.exists():
+        subprocess.run(["git", "clone", "https://github.com/tmux-plugins/tpm", str(TPM)], check=True)
+    # Installs the @plugin entries from tmux.conf; no running tmux server needed
+    subprocess.run([TPM / "bin" / "install_plugins"], check=True)
+
+
 def main() -> None:
     for source in SOURCES:
         restore(source)
     install_system_packages()
     install_tools()
+    install_nvim_plugins()
+    install_tmux_plugins()
     print("Done. Open a new shell to pick up the tools.")
 
 

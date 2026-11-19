@@ -65,6 +65,16 @@
     "lock": 1800,
     "screensaver": 1200
   },
-  "plugins": [],
-  "version": 1
+  "plugins": [
+    {
+      "id": "keigo.nightlight"
+    }
+  ],
+  "version": 1,
+  "disabledPlugins": [
+    "omarchy.nightlight"
+  ],
+  "cloneSourceRestores": [
+    "keigo.nightlight"
+  ]
 }

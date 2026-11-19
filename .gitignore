@@ -1,2 +1,4 @@
 claude/skills/synced
 __pycache__/
+*.bak
+*.bak.*
