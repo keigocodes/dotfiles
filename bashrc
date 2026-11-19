@@ -36,5 +36,6 @@ alias quest="ssh ubx5728@login.quest.northwestern.edu"
 alias globus-start="~/apps/globusconnectpersonal-3.2.8/globusconnectpersonal -start &"
 alias py="python3 -ic 'import math'"
 alias cl="clear"
+alias tree="eza --tree --long --icons --git"
 
 # Whenever wifi cannot connect, go here in the browser: curl -v http://neverssl.com
